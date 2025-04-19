@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
+  Build and Unit Test:
     runs-on: ubuntu-22.04
     container: wpilib/roborio-cross-ubuntu:2025-22.04
     steps:
@@ -18,15 +18,3 @@ jobs:
       run: chmod +x gradlew
     - name: Compile and run tests on robot code
       run: ./gradlew build
-
-  unitTests:
-    runs-on: ubuntu-latest
-    container: wpilib/roborio-cross-ubuntu:2025-22.04
-    steps:
-    - uses: actions/checkout@v4
-    - name: Add repository to git safe directories
-      run: git config --global --add safe.directory $GITHUB_WORKSPACE
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
-    - name: Compile and run tests on robot code
-      run: ./gradlew test
