@@ -30,9 +30,6 @@ public class ElevatorTest {
         DriverStationSim.notifyNewData();
 
         CommandScheduler.getInstance().enable();
-
-        /* delay ~100ms so the devices can start up and enable */
-        Timer.delay(0.100);
     }
 
     @AfterEach
@@ -69,7 +66,9 @@ public class ElevatorTest {
     @Test
     public void stowHeightVoltageRequest() {
         elevator.leaderMotor.setPosition(Elevator.ELEVATOR_MIN_HEIGHT + 1);
-        
+
+        Timer.delay(0.100);
+
         CommandScheduler.getInstance().schedule(elevator.setHeightCommand(() -> Elevator.ELEVATOR_MIN_HEIGHT - 1));
         CommandScheduler.getInstance().run();
 
@@ -79,10 +78,12 @@ public class ElevatorTest {
     @Test
     public void hardStopVoltageRequest() {
         elevator.leaderMotor.setPosition(Elevator.ELEVATOR_MAX_HEIGHT - 1);
+
+        Timer.delay(0.100);
         
         CommandScheduler.getInstance().schedule(elevator.setHeightCommand(() -> Elevator.ELEVATOR_MAX_HEIGHT));
         CommandScheduler.getInstance().run();
-        
+
         assert elevator.leaderMotor.getAppliedControl().getName().equals(VoltageOut.class.getSimpleName());
     }
 }
