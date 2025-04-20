@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
 
 import edu.wpi.first.hal.HAL;
 import edu.wpi.first.wpilibj.Timer;
@@ -54,7 +55,6 @@ public class ElevatorTest {
         CommandScheduler.getInstance().schedule(elevator.setHeightCommand(() -> Elevator.ELEVATOR_MAX_HEIGHT + 1));
         CommandScheduler.getInstance().run();
 
-        assert elevator.leaderMotor.getAppliedControl().getName().equals(MotionMagicVoltage.class.getSimpleName());
         assert elevator.getTargetHeight() == Elevator.ELEVATOR_MAX_HEIGHT;
     }
 
@@ -63,7 +63,26 @@ public class ElevatorTest {
         CommandScheduler.getInstance().schedule(elevator.setHeightCommand(() -> Elevator.ELEVATOR_MIN_HEIGHT - 1));
         CommandScheduler.getInstance().run();
 
-        assert elevator.leaderMotor.getAppliedControl().getName().equals(MotionMagicVoltage.class.getSimpleName());
         assert elevator.getTargetHeight() == Elevator.ELEVATOR_MIN_HEIGHT;
+    }
+
+    @Test
+    public void stowHeightVoltageRequest() {
+        elevator.leaderMotor.setPosition(Elevator.ELEVATOR_MIN_HEIGHT + 1);
+        
+        CommandScheduler.getInstance().schedule(elevator.setHeightCommand(() -> Elevator.ELEVATOR_MIN_HEIGHT - 1));
+        CommandScheduler.getInstance().run();
+
+        assert elevator.leaderMotor.getAppliedControl().getName().equals(VoltageOut.class.getSimpleName());
+    }
+
+    @Test
+    public void hardStopVoltageRequest() {
+        elevator.leaderMotor.setPosition(Elevator.ELEVATOR_MAX_HEIGHT - 1);
+        
+        CommandScheduler.getInstance().schedule(elevator.setHeightCommand(() -> Elevator.ELEVATOR_MAX_HEIGHT));
+        CommandScheduler.getInstance().run();
+        
+        assert elevator.leaderMotor.getAppliedControl().getName().equals(VoltageOut.class.getSimpleName());
     }
 }

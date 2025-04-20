@@ -20,6 +20,8 @@ public final class Constants {
         public static final double kA =
             0.13 * Units.inchesToMeters(ELEVATOR_GEAR_RATIO); // volts per 1 rps/s
 
+        public static final double kG_TOP = 2.6;
+
         // PID for correcting errors
         public static final double kP = 3;
         public static final double kI = 0.05;

@@ -71,6 +71,21 @@ public class ElevatorSubsystem extends SubsystemBase implements AutoCloseable {
     }
 
     @Override
+    public void periodic() {
+        if (getTargetHeight() == Elevator.ELEVATOR_MIN_HEIGHT && getHeight() < Elevator.ELEVATOR_MIN_HEIGHT + 2) {
+            leaderMotor.setVoltage(0);
+            return;
+        }
+
+        if (getHeight() > Elevator.ELEVATOR_MAX_HEIGHT - 8 && getTargetHeight() > Elevator.ELEVATOR_MAX_HEIGHT - 8) {
+            leaderMotor.setVoltage(Elevator.kG_TOP);
+            return;
+        }
+
+        leaderMotor.setControl(positionRequest.withPosition(targetPosition));
+    }
+
+    @Override
     public void close() {
         leaderMotor.close();
         followerMotor.close();
